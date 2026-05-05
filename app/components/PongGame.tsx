@@ -272,6 +272,14 @@ export default function PongGame() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Fix blurry canvas on high-DPI (Retina) screens
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = CANVAS_W * dpr;
+    canvas.height = CANVAS_H * dpr;
+    canvas.style.width = `${CANVAS_W}px`;
+    canvas.style.height = `${CANVAS_H}px`;
+    ctx.scale(dpr, dpr);
+
     const drawStars = (tick: number) => {
       gRef.current.stars.forEach((s) => {
         const alpha = 0.4 + 0.4 * Math.sin(s.twinkle + tick * 0.03);
