@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pong Duel",
-  description: "Classic Pong. Play solo against AI or challenge a friend.",
+  title: "Dragon Pong Z",
+  description: "Dragon Ball Z fan pong game — Goku vs Vegeta. First to 7 wins.",
   other: {
     "apple-mobile-web-app-capable": "yes",
     "mobile-web-app-capable": "yes",

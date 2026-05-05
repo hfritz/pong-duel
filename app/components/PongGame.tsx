@@ -747,16 +747,19 @@ export default function PongGame() {
             {!isMobileLandscape && <div className="text-yellow-400/50 text-xs tracking-[0.3em] uppercase mb-1">⚡ Select Power Level ⚡</div>}
             {(["Beginner", "Rival", "Legend"] as Difficulty[]).map((d) => {
               const cfg = {
-                Beginner: { color: "#00ff88", border: "border-green-400", label: "Over 1,000 — A warm-up", glow: "0 0 15px #00ff8844" },
-                Rival: { color: "#ffee00", border: "border-yellow-400", label: "Over 9,000 — A real fight", glow: "0 0 15px #ffee0044" },
-                Legend: { color: "#ff4444", border: "border-red-500", label: "MAXIMUM POWER — No mercy", glow: "0 0 15px #ff444444" },
+                Beginner: { color: "#00ff88", border: "border-green-400", label: "Over 1,000 — A warm-up", glow: "0 0 18px #00ff8877", bg: "#00ff881a" },
+                Rival:    { color: "#ffee00", border: "border-yellow-400", label: "Over 9,000 — A real fight", glow: "0 0 18px #ffee0077", bg: "#ffee001a" },
+                Legend:   { color: "#ff4444", border: "border-red-500",   label: "MAXIMUM POWER — No mercy", glow: "0 0 18px #ff444477", bg: "#ff44441a" },
               }[d];
+              const selected = difficulty === d;
               return (
                 <button key={d} onClick={() => setDifficulty(d)}
-                  className={`w-full ${isMobileLandscape ? "py-1.5" : "py-3"} px-5 rounded-xl border-2 text-left transition-all ${cfg.border} ${difficulty === d ? "bg-white/10" : "border-opacity-20 bg-transparent"}`}
-                  style={{ boxShadow: difficulty === d ? cfg.glow : "none" }}>
-                  <div className="font-bold tracking-wider text-sm" style={{ color: cfg.color }}>{d.toUpperCase()}</div>
-                  <div className="text-white/35 text-xs">{cfg.label}</div>
+                  className={`w-full ${isMobileLandscape ? "py-1.5" : "py-3"} px-5 rounded-xl border-2 text-left transition-all duration-200 ${cfg.border} ${selected ? "scale-[1.03]" : "opacity-40 scale-100"}`}
+                  style={{ background: selected ? cfg.bg : "transparent", boxShadow: selected ? cfg.glow : "none" }}>
+                  <div className="font-bold tracking-wider text-sm flex items-center gap-1.5" style={{ color: cfg.color }}>
+                    {selected && <span>▶</span>}{d.toUpperCase()}
+                  </div>
+                  <div className={`text-xs ${selected ? "text-white/60" : "text-white/35"}`}>{cfg.label}</div>
                 </button>
               );
             })}
@@ -770,13 +773,18 @@ export default function PongGame() {
               <div className="text-white/20 text-xs text-center">↑↓ or W/S to move your paddle</div>
             )}
             {isMobileLandscape && (
-              <div className="text-white/40 text-xs text-center mt-1">
-                Built by{" "}
-                <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
-                  className="text-yellow-400/60 underline underline-offset-2">
-                  Helmut Fritz
-                </a>
-                {" "}using AI tools · 2026
+              <div className="text-center mt-1">
+                <div className="text-white/40 text-xs">
+                  Built by{" "}
+                  <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
+                    className="text-yellow-400/60 underline underline-offset-2">
+                    Helmut Fritz
+                  </a>
+                  {" "}using AI tools · 2026
+                </div>
+                <div className="text-white/20 text-[10px] mt-0.5">
+                  Dragon Ball Z © Toei Animation / Akira Toriyama. Fan project — no commercial use.
+                </div>
               </div>
             )}
           </div>
@@ -874,13 +882,18 @@ export default function PongGame() {
       })()}
 
       {!isMobileLandscape && (
-        <div className="absolute bottom-4 text-white/50 text-xs">
-          Built by{" "}
-          <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
-            className="text-yellow-400/70 hover:text-yellow-400 transition-colors underline underline-offset-2">
-            Helmut Fritz
-          </a>
-          {" "}using AI tools · 2026
+        <div className="absolute bottom-2 text-center">
+          <div className="text-white/50 text-xs">
+            Built by{" "}
+            <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
+              className="text-yellow-400/70 hover:text-yellow-400 transition-colors underline underline-offset-2">
+              Helmut Fritz
+            </a>
+            {" "}using AI tools · 2026
+          </div>
+          <div className="text-white/20 text-[10px] mt-0.5">
+            Dragon Ball Z © Toei Animation / Akira Toriyama. Fan project — no commercial use.
+          </div>
         </div>
       )}
     </div>
