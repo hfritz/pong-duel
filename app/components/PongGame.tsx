@@ -69,6 +69,7 @@ export default function PongGame() {
   const [copied, setCopied] = useState(false);
   const [scale, setScale] = useState(1);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [isMobileLandscape, setIsMobileLandscape] = useState(false);
   const animFrameRef = useRef<number>(0);
   const keysRef = useRef<Set<string>>(new Set());
   const charImagesRef = useRef<CharImages>({ chichi: null, goten: null, bulma: null, trunks: null });
@@ -240,6 +241,7 @@ export default function PongGame() {
       const w = window.innerWidth;
       const h = window.innerHeight;
       setIsPortrait(h > w && w < 1024);
+      setIsMobileLandscape(w > h && w < 1024);
       const sx = w / CANVAS_W;
       const sy = h / (CANVAS_H + SPECTATOR_H);
       setScale(Math.min(1, sx, sy) * 0.97);
@@ -719,21 +721,27 @@ export default function PongGame() {
       )}
 
       {gameState === "landing" && (
-        <div className="flex flex-col items-center gap-8 text-white px-4 z-10">
-          <div className="text-center">
-            <div className="text-xs tracking-[0.4em] text-yellow-400/60 uppercase mb-3">⚡ Classic Arcade Reborn ⚡</div>
-            <div className="text-6xl font-black tracking-widest font-mono mb-1"
+        <div className={`flex ${isMobileLandscape ? "flex-row gap-6 items-center px-8 w-full max-w-3xl" : "flex-col gap-8 items-center px-4"} text-white z-10`}>
+          {/* Title block */}
+          <div className={`text-center ${isMobileLandscape ? "flex-shrink-0" : ""}`}>
+            {!isMobileLandscape && (
+              <div className="text-xs tracking-[0.4em] text-yellow-400/60 uppercase mb-3">⚡ Classic Arcade Reborn ⚡</div>
+            )}
+            <div className={`${isMobileLandscape ? "text-4xl" : "text-6xl"} font-black tracking-widest font-mono mb-1`}
               style={{ textShadow: "0 0 30px #ffee00, 0 0 60px #ff8800aa", color: "#ffee00" }}>
               DRAGON
             </div>
-            <div className="text-6xl font-black tracking-widest font-mono"
+            <div className={`${isMobileLandscape ? "text-4xl" : "text-6xl"} font-black tracking-widest font-mono`}
               style={{ textShadow: "0 0 30px #00aaff, 0 0 60px #0044ffaa", color: "#ffffff" }}>
               PONG Z
             </div>
-            <div className="text-white/30 text-xs tracking-widest uppercase mt-3">Goku vs Vegeta · First to {WINNING_SCORE} wins</div>
+            <div className={`text-white/30 text-xs tracking-widest uppercase ${isMobileLandscape ? "mt-2" : "mt-3"}`}>
+              Goku vs Vegeta · First to {WINNING_SCORE} wins
+            </div>
           </div>
 
-          <div className="flex flex-col items-center gap-3 w-full max-w-xs">
+          {/* Controls block */}
+          <div className={`flex flex-col items-center ${isMobileLandscape ? "gap-2" : "gap-3"} w-full max-w-xs`}>
             <div className="text-yellow-400/50 text-xs tracking-[0.3em] uppercase mb-1">⚡ Select Power Level ⚡</div>
             {(["Beginner", "Rival", "Legend"] as Difficulty[]).map((d) => {
               const cfg = {
@@ -743,21 +751,23 @@ export default function PongGame() {
               }[d];
               return (
                 <button key={d} onClick={() => setDifficulty(d)}
-                  className={`w-full py-3 px-5 rounded-xl border-2 text-left transition-all ${cfg.border} ${difficulty === d ? "bg-white/10" : "border-opacity-20 bg-transparent"}`}
+                  className={`w-full ${isMobileLandscape ? "py-1.5" : "py-3"} px-5 rounded-xl border-2 text-left transition-all ${cfg.border} ${difficulty === d ? "bg-white/10" : "border-opacity-20 bg-transparent"}`}
                   style={{ boxShadow: difficulty === d ? cfg.glow : "none" }}>
                   <div className="font-bold tracking-wider text-sm" style={{ color: cfg.color }}>{d.toUpperCase()}</div>
                   <div className="text-white/35 text-xs">{cfg.label}</div>
                 </button>
               );
             })}
-          </div>
 
-          <button onClick={() => startGame(difficulty)}
-            className="mt-1 px-12 py-4 font-black tracking-widest rounded-2xl text-lg active:scale-95 transition-all text-black"
-            style={{ background: "linear-gradient(135deg, #ffee00, #ff8800)", boxShadow: "0 0 30px #ffee0066, 0 0 60px #ff880033" }}>
-            FIGHT!
-          </button>
-          <div className="text-white/20 text-xs text-center">↑↓ or W/S to move your paddle</div>
+            <button onClick={() => startGame(difficulty)}
+              className={`w-full ${isMobileLandscape ? "py-2 mt-1" : "mt-1 py-4"} px-12 font-black tracking-widest rounded-2xl ${isMobileLandscape ? "text-base" : "text-lg"} active:scale-95 transition-all text-black`}
+              style={{ background: "linear-gradient(135deg, #ffee00, #ff8800)", boxShadow: "0 0 30px #ffee0066, 0 0 60px #ff880033" }}>
+              FIGHT!
+            </button>
+            {!isMobileLandscape && (
+              <div className="text-white/20 text-xs text-center">↑↓ or W/S to move your paddle</div>
+            )}
+          </div>
         </div>
       )}
 
