@@ -767,6 +767,16 @@ export default function PongGame() {
             {!isMobileLandscape && (
               <div className="text-white/20 text-xs text-center">↑↓ or W/S to move your paddle</div>
             )}
+            {isMobileLandscape && (
+              <div className="text-white/40 text-xs text-center mt-1">
+                Built by{" "}
+                <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
+                  className="text-yellow-400/60 underline underline-offset-2">
+                  Helmut Fritz
+                </a>
+                {" "}using AI tools · 2026
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -855,14 +865,16 @@ export default function PongGame() {
         );
       })()}
 
-      {!isMobileLandscape && <div className="absolute bottom-4 text-white/50 text-xs">
-        Built by{" "}
-        <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
-          className="text-yellow-400/70 hover:text-yellow-400 transition-colors underline underline-offset-2">
-          Helmut Fritz
-        </a>
-        {" "}using AI tools · 2026
-      </div>}
+      {!isMobileLandscape && (
+        <div className="absolute bottom-4 text-white/50 text-xs">
+          Built by{" "}
+          <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
+            className="text-yellow-400/70 hover:text-yellow-400 transition-colors underline underline-offset-2">
+            Helmut Fritz
+          </a>
+          {" "}using AI tools · 2026
+        </div>
+      )}
     </div>
   );
 }
