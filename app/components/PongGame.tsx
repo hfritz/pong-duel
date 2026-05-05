@@ -776,7 +776,7 @@ export default function PongGame() {
               <div className="text-center mt-1">
                 <div className="text-white/40 text-xs">
                   Built by{" "}
-                  <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
+                  <a href="https://helmutfritz.fyi" target="_blank" rel="noopener noreferrer"
                     className="text-yellow-400/60 underline underline-offset-2">
                     Helmut Fritz
                   </a>
@@ -822,7 +822,7 @@ export default function PongGame() {
               </div>
               <div className="text-white/20 text-xs tracking-wider self-center text-center leading-tight">
                 {isMobileLandscape ? (
-                  <>Built by <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer" className="text-yellow-400/50 underline underline-offset-1">Helmut Fritz</a> · 2026</>
+                  <>Built by <a href="https://helmutfritz.fyi" target="_blank" rel="noopener noreferrer" className="text-yellow-400/50 underline underline-offset-1">Helmut Fritz</a> · 2026</>
                 ) : (
                   <>↑↓ or W/S to move</>
                 )}
@@ -885,7 +885,7 @@ export default function PongGame() {
         <div className="absolute bottom-2 text-center">
           <div className="text-white/50 text-xs">
             Built by{" "}
-            <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer"
+            <a href="https://helmutfritz.fyi" target="_blank" rel="noopener noreferrer"
               className="text-yellow-400/70 hover:text-yellow-400 transition-colors underline underline-offset-2">
               Helmut Fritz
             </a>
