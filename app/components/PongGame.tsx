@@ -238,8 +238,8 @@ export default function PongGame() {
 
   useEffect(() => {
     const updateLayout = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = window.visualViewport?.width ?? window.innerWidth;
+      const h = window.visualViewport?.height ?? window.innerHeight;
       setIsPortrait(h > w && w < 1024);
       setIsMobileLandscape(w > h && w < 1024);
       const sx = w / CANVAS_W;
@@ -249,9 +249,11 @@ export default function PongGame() {
     updateLayout();
     window.addEventListener("resize", updateLayout);
     window.addEventListener("orientationchange", updateLayout);
+    window.visualViewport?.addEventListener("resize", updateLayout);
     return () => {
       window.removeEventListener("resize", updateLayout);
       window.removeEventListener("orientationchange", updateLayout);
+      window.visualViewport?.removeEventListener("resize", updateLayout);
     };
   }, []);
 
@@ -664,7 +666,7 @@ export default function PongGame() {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center justify-center select-none overflow-hidden"
+    <div className="h-dvh w-dvw flex flex-col items-center justify-center select-none overflow-hidden"
       style={{ background: "radial-gradient(ellipse at center, #0d0520 0%, #050510 60%, #000005 100%)" }}>
 
       {/* Portrait orientation overlay — shown on mobile portrait only */}
@@ -742,7 +744,7 @@ export default function PongGame() {
 
           {/* Controls block */}
           <div className={`flex flex-col items-center ${isMobileLandscape ? "gap-2" : "gap-3"} w-full max-w-xs`}>
-            <div className="text-yellow-400/50 text-xs tracking-[0.3em] uppercase mb-1">⚡ Select Power Level ⚡</div>
+            {!isMobileLandscape && <div className="text-yellow-400/50 text-xs tracking-[0.3em] uppercase mb-1">⚡ Select Power Level ⚡</div>}
             {(["Beginner", "Rival", "Legend"] as Difficulty[]).map((d) => {
               const cfg = {
                 Beginner: { color: "#00ff88", border: "border-green-400", label: "Over 1,000 — A warm-up", glow: "0 0 15px #00ff8844" },
