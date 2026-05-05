@@ -812,7 +812,13 @@ export default function PongGame() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img ref={gotenImgRef} src="/Gotten.png" alt="Goten" width={60} height={60} style={{ transition: "filter 0.2s" }} />
               </div>
-              <div className="text-white/20 text-xs tracking-wider self-center">↑↓ or W/S to move</div>
+              <div className="text-white/20 text-xs tracking-wider self-center text-center leading-tight">
+                {isMobileLandscape ? (
+                  <>Built by <a href="https://helmut-fritz.vercel.app" target="_blank" rel="noopener noreferrer" className="text-yellow-400/50 underline underline-offset-1">Helmut Fritz</a> · 2026</>
+                ) : (
+                  <>↑↓ or W/S to move</>
+                )}
+              </div>
               <div className="flex items-end gap-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img ref={trunksImgRef} src="/Trunks.png" alt="Trunks" width={60} height={60} style={{ transition: "filter 0.2s" }} />
