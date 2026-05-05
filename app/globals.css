@@ -35,3 +35,9 @@ body {
 .dbz-beam      { animation: dbzBeam      0.9s ease-in-out infinite; }
 .dbz-lightning { animation: dbzLightning 2.2s ease-in-out infinite; }
 .dbz-glow      { animation: dbzGlow      1.1s ease-in-out infinite; }
+
+@keyframes rotateHint {
+  0%, 40%, 100% { transform: rotate(0deg); }
+  60%, 80%      { transform: rotate(90deg); }
+}
+.rotate-hint { animation: rotateHint 2.4s ease-in-out infinite; display: inline-block; }

@@ -44,6 +44,7 @@ interface TextFlash {
 
 const CANVAS_W = 800;
 const CANVAS_H = 500;
+const SPECTATOR_H = 82;
 const PADDLE_W = 14;
 const PADDLE_H = 90;
 const BALL_SIZE = 12;
@@ -66,6 +67,8 @@ export default function PongGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>("Rival");
   const [result, setResult] = useState<GameResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [isPortrait, setIsPortrait] = useState(false);
   const animFrameRef = useRef<number>(0);
   const keysRef = useRef<Set<string>>(new Set());
   const charImagesRef = useRef<CharImages>({ chichi: null, goten: null, bulma: null, trunks: null });
@@ -190,6 +193,10 @@ export default function PongGame() {
   }, []);
 
   const startGame = useCallback((diff: Difficulty) => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (screen.orientation as any).lock?.("landscape");
+    } catch {}
     const g = gRef.current;
     g.playerY = CANVAS_H / 2 - PADDLE_H / 2;
     g.aiY = CANVAS_H / 2 - PADDLE_H / 2;
@@ -226,6 +233,24 @@ export default function PongGame() {
 
   useEffect(() => {
     preloadCharacters().then((imgs) => { charImagesRef.current = imgs; });
+  }, []);
+
+  useEffect(() => {
+    const updateLayout = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      setIsPortrait(h > w && w < 1024);
+      const sx = w / CANVAS_W;
+      const sy = h / (CANVAS_H + SPECTATOR_H);
+      setScale(Math.min(1, sx, sy) * 0.97);
+    };
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+    window.addEventListener("orientationchange", updateLayout);
+    return () => {
+      window.removeEventListener("resize", updateLayout);
+      window.removeEventListener("orientationchange", updateLayout);
+    };
   }, []);
 
   // Animate HTML character elements directly (no React re-renders)
@@ -640,6 +665,23 @@ export default function PongGame() {
     <div className="h-screen w-screen flex flex-col items-center justify-center select-none overflow-hidden"
       style={{ background: "radial-gradient(ellipse at center, #0d0520 0%, #050510 60%, #000005 100%)" }}>
 
+      {/* Portrait orientation overlay — shown on mobile portrait only */}
+      {isPortrait && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6"
+          style={{ background: "radial-gradient(ellipse at center, #0d0520 0%, #050510 80%, #000005 100%)" }}>
+          <div className="rotate-hint text-7xl">📱</div>
+          <div className="text-center">
+            <div className="text-2xl font-black tracking-widest font-mono"
+              style={{ color: "#ffee00", textShadow: "0 0 20px #ffee00" }}>
+              ROTATE DEVICE
+            </div>
+            <div className="text-white/40 text-sm mt-2 tracking-wider">
+              Landscape mode required to play
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* GIF background on landing */}
       {gameState === "landing" && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -720,28 +762,41 @@ export default function PongGame() {
       )}
 
       {gameState === "playing" && (
-        <div className="flex flex-col items-center gap-0">
-          <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
-            className="rounded-t-xl max-w-full"
-            style={{ border: "1px solid rgba(255,238,0,0.15)", borderBottom: "none" }}
-            onTouchMove={handleCanvasTouch} />
-          {/* Spectator zone */}
-          <div className="flex justify-between items-end px-2 py-1"
-            style={{ width: CANVAS_W, background: "rgba(255,238,0,0.03)",
-              border: "1px solid rgba(255,238,0,0.15)", borderTop: "1px solid rgba(255,238,0,0.08)",
-              borderRadius: "0 0 12px 12px" }}>
-            <div className="flex items-end gap-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img ref={chiChiImgRef} src="/Chi chi.png" alt="Chi-Chi" width={72} height={72} style={{ transition: "filter 0.2s" }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img ref={gotenImgRef} src="/Gotten.png" alt="Goten" width={60} height={60} style={{ transition: "filter 0.2s" }} />
-            </div>
-            <div className="text-white/20 text-xs tracking-wider self-center">↑↓ or W/S to move</div>
-            <div className="flex items-end gap-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img ref={trunksImgRef} src="/Trunks.png" alt="Trunks" width={60} height={60} style={{ transition: "filter 0.2s" }} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img ref={bulmaImgRef} src="/Bulma.png" alt="Bulma" width={72} height={72} style={{ transition: "filter 0.2s" }} />
+        <div style={{
+          width: CANVAS_W * scale,
+          height: (CANVAS_H + SPECTATOR_H) * scale,
+          position: "relative",
+          flexShrink: 0,
+        }}>
+          <div style={{
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }} className="flex flex-col items-center gap-0">
+            <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
+              className="rounded-t-xl"
+              style={{ border: "1px solid rgba(255,238,0,0.15)", borderBottom: "none" }}
+              onTouchMove={handleCanvasTouch} />
+            {/* Spectator zone */}
+            <div className="flex justify-between items-end px-2 py-1"
+              style={{ width: CANVAS_W, background: "rgba(255,238,0,0.03)",
+                border: "1px solid rgba(255,238,0,0.15)", borderTop: "1px solid rgba(255,238,0,0.08)",
+                borderRadius: "0 0 12px 12px" }}>
+              <div className="flex items-end gap-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img ref={chiChiImgRef} src="/Chi chi.png" alt="Chi-Chi" width={72} height={72} style={{ transition: "filter 0.2s" }} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img ref={gotenImgRef} src="/Gotten.png" alt="Goten" width={60} height={60} style={{ transition: "filter 0.2s" }} />
+              </div>
+              <div className="text-white/20 text-xs tracking-wider self-center">↑↓ or W/S to move</div>
+              <div className="flex items-end gap-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img ref={trunksImgRef} src="/Trunks.png" alt="Trunks" width={60} height={60} style={{ transition: "filter 0.2s" }} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img ref={bulmaImgRef} src="/Bulma.png" alt="Bulma" width={72} height={72} style={{ transition: "filter 0.2s" }} />
+              </div>
             </div>
           </div>
         </div>
